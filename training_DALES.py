@@ -94,11 +94,11 @@ class DALESConfig(Config):
 
     # KPConv specific parameters
     num_kernel_points = 15
-    first_subsampling_dl = 0.08
-    in_radius = 4.0
+    first_subsampling_dl = 0.25
+    in_radius = 20.000
 
     # Density of neighborhoods for deformable convs (which need bigger radiuses). For normal conv we use KP_extent
-    density_parameter = 5.0
+    density_parameter = 15.0
 
     # Behavior of convolutions in ('constant', 'linear', gaussian)
     KP_influence = 'linear'
@@ -140,7 +140,7 @@ class DALESConfig(Config):
     batch_num = 8
 
     # Number of steps per epochs (cannot be None for this dataset)
-    epoch_steps = 500
+    epoch_steps = 741
 
     # Number of validation examples per epoch
     validation_size = 50
