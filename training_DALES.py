@@ -7,11 +7,11 @@
 #
 # ----------------------------------------------------------------------------------------------------------------------
 #
-#      Callable script to start a training on NPM3D dataset
+#      Callable script to start a training on DALES dataset
 #
 # ----------------------------------------------------------------------------------------------------------------------
 #
-#      Hugues THOMAS - 11/06/2018
+#     
 #
 
 
@@ -36,7 +36,7 @@ from utils.trainer import ModelTrainer
 from models.KPFCNN_model import KernelPointFCNN
 
 # Dataset
-from datasets.NPM3D import NPM3DDataset
+from datasets.DALES import DALESDataset
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -46,7 +46,7 @@ from datasets.NPM3D import NPM3DDataset
 #
 
 
-class NPM3DConfig(Config):
+class DALESConfig(Config):
     """
     Override the parameters you want to modify for this dataset
     """
@@ -57,13 +57,13 @@ class NPM3DConfig(Config):
 
     # Dataset name in the format 'ShapeNetPart_Object' to segment an object class independently or 'ShapeNetPart_multi'
     # to segment all objects with a single model.
-    dataset = 'NPM3D'
+    dataset = 'DALES'
 
     # Number of classes in the dataset (This value is overwritten by dataset class when initiating input pipeline).
-    num_classes = 8
+    num_classes = None
 
     # Type of task performed on this dataset (also overwritten)
-    network_model = 'cloud_segmentation'
+    network_model = None
 
     # Number of CPU threads for the input pipeline
     input_threads = 8
@@ -94,11 +94,11 @@ class NPM3DConfig(Config):
 
     # KPConv specific parameters
     num_kernel_points = 15
-    first_subsampling_dl = 0.25
-    in_radius = 20.000
+    first_subsampling_dl = 0.08
+    in_radius = 4.0
 
     # Density of neighborhoods for deformable convs (which need bigger radiuses). For normal conv we use KP_extent
-    density_parameter = 15.0
+    density_parameter = 5.0
 
     # Behavior of convolutions in ('constant', 'linear', gaussian)
     KP_influence = 'linear'
@@ -108,20 +108,20 @@ class NPM3DConfig(Config):
     convolution_mode = 'sum'
 
     # Can the network learn modulations
-    modulated = 0
+    modulated = False
 
     # Offset loss
     # 'permissive' only constrains offsets inside the big radius
     # 'fitting' helps deformed kernels to adapt to the geometry by penalizing distance to input points
     offsets_loss = 'fitting'
-    offsets_decay = 0.100000
+    offsets_decay = 0.1
 
     # Choice of input features
     in_features_dim = 1
 
     # Batch normalization parameters
-    use_batch_norm = 1
-    batch_norm_momentum = 0.980
+    use_batch_norm = True
+    batch_norm_momentum = 0.98
 
     #####################
     # Training parameters
@@ -140,7 +140,7 @@ class NPM3DConfig(Config):
     batch_num = 8
 
     # Number of steps per epochs (cannot be None for this dataset)
-    epoch_steps = 741
+    epoch_steps = 500
 
     # Number of validation examples per epoch
     validation_size = 50
@@ -192,7 +192,7 @@ if __name__ == '__main__':
     # Load the model parameters
     ###########################
 
-    config = NPM3DConfig()
+    config = DALESConfig()
 
     ##############
     # Prepare Data
@@ -203,7 +203,7 @@ if __name__ == '__main__':
     print('*******************')
 
     # Initiate dataset configuration
-    dataset = NPM3DDataset(config.input_threads, load_test=False)
+    dataset = DALESDataset(config.input_threads, load_test=False)
 
     # Create subsampled input clouds
     dl0 = config.first_subsampling_dl
